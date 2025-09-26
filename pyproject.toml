@@ -14,3 +14,68 @@ dependencies = [
     "python-dotenv==1.1.1",
     "pytest==8.3.4",
 ]
+
+[project.optional-dependencies]
+dev = [
+    "black==24.10.0",
+    "ruff==0.9.2",
+    "mypy==1.13.0",
+    "isort==5.13.2",
+    "pre-commit==4.0.1",
+]
+
+[tool.black]
+line-length = 88
+target-version = ['py313']
+include = '\.pyi?$'
+extend-exclude = '''
+(
+  /(
+      \.eggs
+    | \.git
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+    | chroma_db
+    | docs
+  )/
+)
+'''
+
+[tool.ruff]
+line-length = 88
+target-version = "py313"
+exclude = [
+    ".git",
+    ".venv",
+    "__pycache__",
+    "chroma_db",
+    "docs",
+    "dist",
+    "build"
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N"]
+ignore = ["E501", "E402", "F841"]
+
+[tool.isort]
+profile = "black"
+line_length = 88
+skip_gitignore = true
+
+[tool.mypy]
+python_version = "3.13"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+ignore_missing_imports = true
+exclude = [
+    "chroma_db",
+    "docs",
+]

@@ -16,6 +16,16 @@ This is a Retrieval-Augmented Generation (RAG) chatbot system that enables users
 - **Start server**: `./run.sh` (recommended) or `cd backend && uv run uvicorn app:app --reload --port 8000`
 - **Access**: Web interface at http://localhost:8000, API docs at http://localhost:8000/docs
 
+### Code Quality Commands
+- **Install dev dependencies**: `uv sync --extra dev`
+- **Format code**: `./format_code.sh` - Automatically formats all Python code with black and isort
+- **Check quality**: `./check_quality.sh` - Runs all quality checks (black, isort, ruff, mypy)
+- **Run specific tools**:
+  - Format: `uv run black backend/` and `uv run isort backend/`
+  - Lint: `uv run ruff check backend/`
+  - Type check: `uv run mypy backend/`
+- **Pre-commit hooks**: `pre-commit install` (optional, for automatic checks before commits)
+
 ### Project Dependencies
 - Python 3.13+ with uv package manager
 - **IMPORTANT**: Always use `uv` for package management - never use pip directly
@@ -78,3 +88,22 @@ Documents are automatically loaded from `docs/` folder on server startup. The sy
 - CORS enabled for development with wildcard origins
 - Static files served directly from FastAPI for simplicity
 - make sure to use uv to manage all dependencies
+
+## Code Quality Standards
+
+### Formatting and Style
+- **Black**: Line length 88, target Python 3.13+
+- **isort**: Uses black-compatible profile
+- **Ruff**: Fast linting with auto-fix capabilities
+- **MyPy**: Type checking with lenient settings for gradual typing
+
+### Quality Workflow
+1. Before committing: Run `./format_code.sh` to auto-format code
+2. Verify quality: Run `./check_quality.sh` to ensure all checks pass
+3. Optional: Install pre-commit hooks with `pre-commit install` for automatic checks
+
+### Tool Configuration
+All tool settings are centralized in `pyproject.toml` for consistency:
+- Black, Ruff, isort, and MyPy configurations
+- Excludes `chroma_db/` and `docs/` from quality checks
+- Development dependencies in `[project.optional-dependencies]` section
