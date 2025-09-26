@@ -40,10 +40,15 @@ class QueryRequest(BaseModel):
     query: str
     session_id: Optional[str] = None
 
+class SourceItem(BaseModel):
+    """Individual source item with text and optional link"""
+    text: str
+    link: Optional[str] = None
+
 class QueryResponse(BaseModel):
     """Response model for course queries"""
     answer: str
-    sources: List[str]
+    sources: List[SourceItem]
     session_id: str
 
 class CourseStats(BaseModel):
@@ -65,9 +70,18 @@ async def query_documents(request: QueryRequest):
         # Process query using RAG system
         answer, sources = rag_system.query(request.query, session_id)
         
+        # Convert sources to SourceItem format if they're not already
+        formatted_sources = []
+        for source in sources:
+            if isinstance(source, dict):
+                formatted_sources.append(SourceItem(**source))
+            else:
+                # Backwards compatibility: treat as text-only source
+                formatted_sources.append(SourceItem(text=str(source)))
+        
         return QueryResponse(
             answer=answer,
-            sources=sources,
+            sources=formatted_sources,
             session_id=session_id
         )
     except Exception as e:
@@ -116,4 +130,4 @@ class DevStaticFiles(StaticFiles):
     
     
 # Serve static files for the frontend
-app.mount("/", StaticFiles(directory="../frontend", html=True), name="static")
+app.mount("/", DevStaticFiles(directory="../frontend", html=True), name="static")
