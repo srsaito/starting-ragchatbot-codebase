@@ -5,13 +5,15 @@ This simulates complex queries that require multiple tool calls.
 """
 
 import os
-from dotenv import load_dotenv
+
 from ai_generator import AIGenerator
-from search_tools import CourseSearchTool, CourseOutlineTool, ToolManager
+from dotenv import load_dotenv
+from search_tools import CourseOutlineTool, CourseSearchTool, ToolManager
 from vector_store import VectorStore
 
 # Load environment variables
 load_dotenv()
+
 
 def test_sequential_tool_calling():
     """Test that the AI can make sequential tool calls for complex queries"""
@@ -23,7 +25,9 @@ def test_sequential_tool_calling():
         return
 
     # Initialize the AI generator
-    ai_gen = AIGenerator(api_key, "claude-3-haiku-20240307")  # Using Haiku for faster testing
+    ai_gen = AIGenerator(
+        api_key, "claude-3-haiku-20240307"
+    )  # Using Haiku for faster testing
 
     # Initialize vector store (assuming it's already populated)
     vector_store = VectorStore()
@@ -40,18 +44,16 @@ def test_sequential_tool_calling():
     test_queries = [
         # Query 1: Should use outline tool then search tool
         "What specific topics are covered in lesson 2 of the Introduction to AI course?",
-
         # Query 2: Should use multiple searches to compare
         "Compare the content about APIs between different courses",
-
         # Query 3: Should use outline to find lessons then search for specific content
-        "Find all lessons that discuss neural networks and tell me what each course says about them"
+        "Find all lessons that discuss neural networks and tell me what each course says about them",
     ]
 
     for i, query in enumerate(test_queries, 1):
         print(f"\n{'='*60}")
         print(f"Test Query {i}: {query}")
-        print('='*60)
+        print("=" * 60)
 
         try:
             # Call the AI with tools available
@@ -59,7 +61,7 @@ def test_sequential_tool_calling():
                 query=query,
                 tools=tool_manager.get_tool_definitions(),
                 tool_manager=tool_manager,
-                max_rounds=2  # Allow up to 2 rounds of tool calling
+                max_rounds=2,  # Allow up to 2 rounds of tool calling
             )
 
             print(f"\nResponse:\n{response}")
@@ -76,6 +78,7 @@ def test_sequential_tool_calling():
 
         except Exception as e:
             print(f"Error processing query: {str(e)}")
+
 
 if __name__ == "__main__":
     print("Testing Sequential Tool Calling Implementation")
